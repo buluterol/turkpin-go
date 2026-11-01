@@ -63,6 +63,29 @@ func main() {
 }
 ```
 
+## Web framework'leri
+
+İstemci eşzamanlı kullanıma uygundur (`*http.Client` gibi); uygulama açılışında bir kez oluşturup handler'lara verin. İstek bağlamını geçirmek yeterlidir, ek adaptör gerekmez.
+
+```go
+tp := turkpin.New(os.Getenv("TURKPIN_USERNAME"), os.Getenv("TURKPIN_PASSWORD"), false)
+
+// net/http, Chi
+http.HandleFunc("/balance", func(w http.ResponseWriter, r *http.Request) {
+	bal, err := tp.Balance(r.Context())
+	// ...
+})
+
+// Gin
+r.GET("/balance", func(c *gin.Context) { bal, err := tp.Balance(c.Request.Context()) /* ... */ })
+
+// Echo
+e.GET("/balance", func(c echo.Context) error { bal, err := tp.Balance(c.Request().Context()) /* ... */ })
+
+// Fiber
+app.Get("/balance", func(c *fiber.Ctx) error { bal, err := tp.Balance(c.UserContext()) /* ... */ })
+```
+
 ## Desteklenen komutlar
 
 | API komutu | Açıklama |
